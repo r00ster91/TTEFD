@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TTEFD</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Tool to convert text to EXAPUNKS font data">
+    <meta name="keywords" content="TTEFD,EXAPUNKS">
+  </head>
+
+  <body>
+    <style>
+    body {
+      font-family: Consolas;
+    }
+    input {
+      width: 300px;
+    }
+    </style>
+
+    Text to convert to EXAPUNKS font data:
+
+    <input id="input">
+
+    <script>
+    input_field = document.getElementById("input");
+    input_field.addEventListener("keyup", function(event) {
+      if(event.key == "Enter") {
+        text = document.getElementById("input").value.toUpperCase();
+        result = "DATA ";
+        for(var index = 0; index < text.length; index++) {
+          character = text[index];
+          if(character == " ") {
+            result += "300";
+          } else if(character >= "A" && character <= "Z") {
+            result += character.charCodeAt(0) + 236;
+          } else if(character >= "0" && character <= "9") {
+            result += character.charCodeAt(0) + 279;
+          } else if(character == ".") {
+            result += "337";
+          } else if(character == "?") {
+            result += "338";
+          } else if(character == "!") {
+            result += "339";
+          } else {
+            alert("Invalid character found: " + character + "\nIgnoring character.");
+            continue;
+          }
+          if(index != text.length - 1) {
+            result += " ";
+          }
+        }
+        row_index = 0;
+        for(var index = 0; index < result.length; ++index) {
+          if(row_index == 24) {
+            result = [result.slice(0, index), "\nDATA", result.slice(index)].join("");
+            row_index = 0;
+          } else {
+            row_index += 1;
+          }
+        }
+        copy_to_clipboard = confirm(result + "\n\nDo you want to copy the data to the clipboard?\n\n");
+        if(copy_to_clipboard) {
+          if (location.protocol != "https:") {
+            alert("The connection is not secure which makes the clipboard unaccessible. Please use the secure website: https://ttefd.glitch.me");
+          } else {
+            if(navigator.clipboard == undefined) {
+              alert("Cannot access clipboard. Please try using a different browser.");
+            } else {
+              navigator.clipboard.writeText(result);
+            }
+          }
+        }
+      }
+    });
+    </script>
+  </body>
+</html>
+
+<!--Made by r00ster-->
